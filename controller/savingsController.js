@@ -1,10 +1,27 @@
-const Savings = require("../models/savings");
+const Savings = require('../models/Savings');
 
-exports.createSavings = async (req, res) => {
+// Add income and expenses
+exports.addIncomeAndExpenses = async (req, res) => {
   try {
-    const savings = await Savings.create(req.body);
+    const { income, expenses } = req.body;
+    const savings = new Savings({
+      income,
+      expenses,
+    });
+
+    await savings.save();
     res.status(201).json(savings);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: 'Error saving data', error });
+  }
+};
+
+// Get income and expenses
+exports.getIncomeAndExpenses = async (req, res) => {
+  try {
+    const savings = await Savings.find();
+    res.status(200).json(savings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching data', error });
   }
 };

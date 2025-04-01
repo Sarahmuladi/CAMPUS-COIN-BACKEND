@@ -1,12 +1,14 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
+const expenseSchema = new mongoose.Schema({
+  category: String,
+  amount: Number,
+});
 
 const savingsSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  goalName: { type: String, required: true },
-  targetAmount: { type: Number, required: true },
-  currentAmount: { type: Number, default: 0 },
-  isLocked: { type: Boolean, default: false },
-  lockUntil: { type: Date },
-}, { timestamps: true });
+  income: Number,
+  expenses: [expenseSchema],
+});
 
-module.exports = mongoose.model("Savings", savingsSchema);
+const Savings = mongoose.model('Savings', savingsSchema);
+module.exports = Savings;
