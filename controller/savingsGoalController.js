@@ -1,4 +1,4 @@
-const SavingsGoal = require("Goal");
+const SavingsGoal = require("../models/savingsGoal");
 
 exports.createSavingsGoal = async (req, res) => {
   try {
