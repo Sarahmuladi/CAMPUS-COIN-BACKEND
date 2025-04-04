@@ -1,4 +1,4 @@
-const Savings = require('../models/Savings');
+const Savings = require('../models/savings');
 
 // Add income and expenses
 exports.addIncomeAndExpenses = async (req, res) => {
