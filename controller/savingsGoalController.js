@@ -1,47 +1,59 @@
 const SavingsGoal = require("../models/savingsGoal");
 
+// Create a new savings goal
 exports.createSavingsGoal = async (req, res) => {
   try {
-
-    if (req.body == null ){
-      return 
-    } 
-
-    const savingsGoal = await SavingsGoal.create(req.body.newGoal);
+    const savingsGoal = await SavingsGoal.create({ ...req.body, userId: req.user.id }); // Attach userId
     res.status(201).json(savingsGoal);
   } catch (error) {
-    console.log(error)
-    res.json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
-exports.getSavingsGoal = async (req, res) => {
+// Get all savings goals for the logged-in user
+exports.getSavingsGoals = async (req, res) => {
   try {
-    const savingsGoal = await SavingsGoal.find();
-    res.status(200).json(savingsGoal);
-
-  } catch(error) {
+    const savingsGoals = await SavingsGoal.find({ userId: req.user.id }); // Filter by userId
+    res.status(200).json(savingsGoals);
+  } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
-exports.deleteSavingsGoal = async (req, res) => {
-  const goalId = req.params.id; 
+// Update a specific savings goal
+exports.updateSavingsGoal = async (req, res) => {
+  const goalId = req.params.id;
 
   try {
-    // Find and delete the goal by its ID
-    const deletedGoal = await SavingsGoal.findByIdAndDelete(goalId);
+    const updatedGoal = await SavingsGoal.findOneAndUpdate(
+      { _id: goalId, userId: req.user.id }, // Ensure user owns the goal
+      req.body,
+      { new: true } // Return the updated document
+    );
 
-    // If goal is not found, send a 404 error
-    if (!deletedGoal) {
-      return res.status(404).json({ message: 'Goal not found' });
+    if (!updatedGoal) {
+      return res.status(404).json({ message: "Savings goal not found" });
     }
 
-    // If goal is successfully deleted, send a success message
-    res.status(200).json({ message: 'Goal deleted successfully' });
+    res.status(200).json(updatedGoal);
   } catch (error) {
-    // Handle errors (e.g., database connection issues)
-    console.error('Error deleting goal:', error);
-    res.status(500).json({ message: 'Server error while deleting the goal' });
+    res.status(500).json({ message: "Server error while updating the savings goal" });
   }
-}
+};
+
+// Delete a specific savings goal
+exports.deleteSavingsGoal = async (req, res) => {
+  const goalId = req.params.id;
+
+  try {
+    const deletedGoal = await SavingsGoal.findOneAndDelete({ _id: goalId, userId: req.user.id }); // Ensure user owns the goal
+
+    if (!deletedGoal) {
+      return res.status(404).json({ message: "Savings goal not found" });
+    }
+
+    res.status(200).json({ message: "Savings goal deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error while deleting the savings goal" });
+  }
+};

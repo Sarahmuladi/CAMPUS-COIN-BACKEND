@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { createLockedSavings, completeLockedSavings } = require("../controller/lockedSavingsController");
+const {
+  createLockedSavings,
+  completeLockedSavings,
+  getLockedSavings,
+} = require("../controller/lockedSavingsController");
+const authMiddleware = require("../controller/middleware/authMiddleware");
 
-router.post("/create", createLockedSavings);
-router.post("/complete", completeLockedSavings);
+// Protect routes with authMiddleware
+router.post("/create", authMiddleware, createLockedSavings);
+router.post("/complete", authMiddleware, completeLockedSavings);
+router.get("/", authMiddleware, getLockedSavings); // Add a route to fetch locked savings
 
 module.exports = router;

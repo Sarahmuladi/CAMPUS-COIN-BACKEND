@@ -1,10 +1,13 @@
 const express = require("express");
-const router = express.Router();
-//const { createSavings } = require("../controller/savingsController");
-const savingsController = require('../controller/savingsController');
+const {
+  addIncomeAndExpenses,
+  getIncomeAndExpenses,
+} = require("../controller/savingsController");
+const authMiddleware = require("../controller/middleware/authMiddleware");
 
-//router.post("/create", createSavings);
-router.post('/add', savingsController.addIncomeAndExpenses);
-router.get('/get', savingsController.getIncomeAndExpenses);
+const router = express.Router();
+
+router.post("/add", authMiddleware, addIncomeAndExpenses);
+router.get("/get", authMiddleware, getIncomeAndExpenses);
 
 module.exports = router;
