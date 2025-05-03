@@ -49,7 +49,7 @@ const Expenses = require("../models/expenses");
 
 exports.createExpenses = async (req, res) => {
   try {
-    const expenses = await Expenses.create({ ...req.body, userId: req.user.id }); // Attach userId
+    const expenses = await Expenses.create({ ...req.body, userId: req.user._id }); // Attach userId
     res.status(201).json(expenses);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -58,7 +58,7 @@ exports.createExpenses = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
   try {
-    const expenses = await Expenses.find({ userId: req.user.id }); // Filter by userId
+    const expenses = await Expenses.find({ userId: req.user._id }); // Filter by userId
     res.status(200).json(expenses);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -66,10 +66,10 @@ exports.getExpenses = async (req, res) => {
 };
 
 exports.deleteExpenses = async (req, res) => {
-  const expensesId = req.params.id;
+  const expensesId = req.params._id;
 
   try {
-    const deletedExpenses = await Expenses.findOneAndDelete({ _id: expensesId, userId: req.user.id }); // Ensure user owns the expense
+    const deletedExpenses = await Expenses.findOneAndDelete({ _id: expensesId, userId: req.user._id }); // Ensure user owns the expense
 
     if (!deletedExpenses) {
       return res.status(404).json({ message: "Expenses not found" });

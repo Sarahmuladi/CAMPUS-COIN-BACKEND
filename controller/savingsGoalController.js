@@ -3,7 +3,7 @@ const SavingsGoal = require("../models/savingsGoal");
 // Create a new savings goal
 exports.createSavingsGoal = async (req, res) => {
   try {
-    const savingsGoal = await SavingsGoal.create({ ...req.body, userId: req.user.id }); // Attach userId
+    const savingsGoal = await SavingsGoal.create({ ...req.body, userId: req.user._id }); // Attach userId
     res.status(201).json(savingsGoal);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -13,7 +13,7 @@ exports.createSavingsGoal = async (req, res) => {
 // Get all savings goals for the logged-in user
 exports.getSavingsGoals = async (req, res) => {
   try {
-    const savingsGoals = await SavingsGoal.find({ userId: req.user.id }); // Filter by userId
+    const savingsGoals = await SavingsGoal.find({ userId: req.user._id }); // Filter by userId
     res.status(200).json(savingsGoals);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -22,11 +22,11 @@ exports.getSavingsGoals = async (req, res) => {
 
 // Update a specific savings goal
 exports.updateSavingsGoal = async (req, res) => {
-  const goalId = req.params.id;
+  const goalId = req.params._id;
 
   try {
     const updatedGoal = await SavingsGoal.findOneAndUpdate(
-      { _id: goalId, userId: req.user.id }, // Ensure user owns the goal
+      { _id: goalId, userId: req.user._id }, // Ensure user owns the goal
       req.body,
       { new: true } // Return the updated document
     );
@@ -43,10 +43,10 @@ exports.updateSavingsGoal = async (req, res) => {
 
 // Delete a specific savings goal
 exports.deleteSavingsGoal = async (req, res) => {
-  const goalId = req.params.id;
+  const goalId = req.params._id;
 
   try {
-    const deletedGoal = await SavingsGoal.findOneAndDelete({ _id: goalId, userId: req.user.id }); // Ensure user owns the goal
+    const deletedGoal = await SavingsGoal.findOneAndDelete({ _id: goalId, userId: req.user._id }); // Ensure user owns the goal
 
     if (!deletedGoal) {
       return res.status(404).json({ message: "Savings goal not found" });

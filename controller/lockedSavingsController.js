@@ -40,7 +40,7 @@ const LockedSavings = require("../models/lockedSavings");
 // Create a new locked savings entry
 exports.createLockedSavings = async (req, res) => {
   try {
-    const lockedSavings = await LockedSavings.create({ ...req.body, userId: req.user.id }); // Attach userId
+    const lockedSavings = await LockedSavings.create({ ...req.body, userId: req.user._id }); // Attach userId
     res.status(201).json(lockedSavings);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -49,11 +49,11 @@ exports.createLockedSavings = async (req, res) => {
 
 // Complete a locked savings entry
 exports.completeLockedSavings = async (req, res) => {
-  const lockedSavingsId = req.body.id;
+  const lockedSavingsId = req.body._id;
 
   try {
     const updatedLockedSavings = await LockedSavings.findOneAndUpdate(
-      { _id: lockedSavingsId, userId: req.user.id }, // Ensure user owns the locked savings
+      { _id: lockedSavingsId, userId: req.user._id }, // Ensure user owns the locked savings
       { status: "completed" }, // Update the status to completed
       { new: true } // Return the updated document
     );
@@ -71,7 +71,7 @@ exports.completeLockedSavings = async (req, res) => {
 // Get all locked savings for the logged-in user
 exports.getLockedSavings = async (req, res) => {
   try {
-    const lockedSavings = await LockedSavings.find({ userId: req.user.id }); // Filter by userId
+    const lockedSavings = await LockedSavings.find({ userId: req.user._id }); // Filter by userId
     res.status(200).json(lockedSavings);
   } catch (error) {
     res.status(400).json({ error: error.message });

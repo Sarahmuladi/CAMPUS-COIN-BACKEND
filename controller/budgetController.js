@@ -3,7 +3,7 @@ const Budget = require("../models/budget");
 // Create a new budget
 exports.createBudget = async (req, res) => {
   try {
-    const budget = await Budget.create({ ...req.body, userId: req.user.id }); // Attach userId
+    const budget = await Budget.create({ ...req.body, userId: req.user._id }); // Attach userId
     res.status(201).json(budget);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -13,7 +13,7 @@ exports.createBudget = async (req, res) => {
 // Get all budgets for the logged-in user
 exports.getBudgets = async (req, res) => {
   try {
-    const budgets = await Budget.find({ userId: req.user.id }); // Filter by userId
+    const budgets = await Budget.find({ userId: req.user._id }); // Filter by userId
     res.status(200).json(budgets);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -26,7 +26,7 @@ exports.updateBudget = async (req, res) => {
 
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
-      { _id: budgetId, userId: req.user.id }, // Ensure user owns the budget
+      { _id: budgetId, userId: req.user._id }, // Ensure user owns the budget
       req.body,
       { new: true } // Return the updated document
     );
@@ -46,7 +46,7 @@ exports.deleteBudget = async (req, res) => {
   const budgetId = req.params.id;
 
   try {
-    const deletedBudget = await Budget.findOneAndDelete({ _id: budgetId, userId: req.user.id }); // Ensure user owns the budget
+    const deletedBudget = await Budget.findOneAndDelete({ _id: budgetId, userId: req.user._id }); // Ensure user owns the budget
 
     if (!deletedBudget) {
       return res.status(404).json({ message: "Budget not found" });

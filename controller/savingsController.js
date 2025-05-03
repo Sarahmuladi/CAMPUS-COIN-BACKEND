@@ -9,7 +9,7 @@ exports.addIncomeAndExpenses = async (req, res) => {
     const savings = new Savings({
       income,
       expenses,
-      userId: req.user.id, // Attach userId
+      userId: req.user._id, // Attach userId
     });
 
     await savings.save();
@@ -23,7 +23,7 @@ exports.addIncomeAndExpenses = async (req, res) => {
 exports.getIncomeAndExpenses = async (req, res) => {
   try {
     // Fetch savings data only for the logged-in user
-    const savings = await Savings.find({ userId: req.user.id }); // Filter by userId
+    const savings = await Savings.find({ userId: req.user._id }); // Filter by userId
     res.status(200).json(savings);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching data', error });
