@@ -51,8 +51,11 @@ exports.createExpenses = async (req, res) => {
   try {
     const expenses = await Expenses.create({ ...req.body, userId: req.user._id }); // Attach userId
     res.status(201).json(expenses);
+    console.log(res.data)
+    console.log("Expenses created successfully:", expenses);
   } catch (error) {
     res.status(400).json({ error: error.message });
+    console.error("Error creating expenses:", error.message);
   }
 };
 

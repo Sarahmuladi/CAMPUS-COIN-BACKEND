@@ -22,7 +22,7 @@ exports.getBudgets = async (req, res) => {
 
 // Update a specific budget
 exports.updateBudget = async (req, res) => {
-  const budgetId = req.params.id;
+  const budgetId = req.params._id;
 
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
